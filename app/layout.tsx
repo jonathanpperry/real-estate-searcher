@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import {
 	ClerkProvider,
-	SignInButton,
-	SignUpButton,
-	SignedIn,
-	SignedOut,
-	UserButton,
+
 } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -21,8 +17,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Real Estate App",
-	description: "Find your dream property",
+	title: {
+		default: "Nestwell | Find Your Perfect Home",
+		template: "%s | Nestwell",
+	},
+	description:
+		"Nestwell is a modern real estate platform helping you discover, explore, and secure your dream property with confidence.",
+	keywords: [
+		"real estate",
+		"homes for sale",
+		"property listings",
+		"buy a home",
+		"rent a home",
+		"Nestwell",
+	],
+	authors: [{ name: "Nestwell" }],
+	creator: "Nestwell",
+	openGraph: {
+		type: "website",
+		locale: "en_US",
+		siteName: "Nestwell",
+		title: "Nestwell | Find Your Perfect Home",
+		description:
+			"Discover your dream property on Nestwell — a modern real estate platform built for buyers, sellers, and renters.",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Nestwell | Find Your Perfect Home",
+		description:
+			"Discover your dream property on Nestwell — a modern real estate platform built for buyers, sellers, and renters.",
+	},
 };
 
 export default function RootLayout({
@@ -36,22 +60,6 @@ export default function RootLayout({
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 				>
-					<header className="flex justify-end items-center p-4 gap-4 h-16">
-						<SignedOut>
-							<SignInButton />
-							<SignUpButton>
-								<button
-									type="button"
-									className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer"
-								>
-									Sign Up
-								</button>
-							</SignUpButton>
-						</SignedOut>
-						<SignedIn>
-							<UserButton />
-						</SignedIn>
-					</header>
 					{children}
 				</body>
 			</html>
