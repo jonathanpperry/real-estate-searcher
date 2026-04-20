@@ -51,6 +51,7 @@ export const PROPERTIES_SEARCH_QUERY = defineQuery(/* groq */ `
     price,
     originalPrice,
     propertyType,
+    createdAt,
     status,
     bedrooms,
     bathrooms,
@@ -155,6 +156,7 @@ export const USER_PROFILE_QUERY = defineQuery(/* groq */ `
     _id,
     name,
     email,
+    clerkId,
     phone,
     photo { ${imageFragment} },
     createdAt

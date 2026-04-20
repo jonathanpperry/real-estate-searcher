@@ -315,13 +315,16 @@ export type FEATURED_PROPERTIES_QUERYResult = Array<{
   location: Geopoint | null;
 }>;
 // Variable: PROPERTIES_SEARCH_QUERY
-// Query: *[_type == "property" && status == "active"    && price >= $minPrice && price <= $maxPrice    && ($beds == 0 || ($bedsIsPlus == true && bedrooms >= $beds) || ($bedsIsPlus == false && bedrooms == $beds))    && ($baths == 0 || ($bathsIsPlus == true && bathrooms >= $baths) || ($bathsIsPlus == false && bathrooms == $baths))    && ($type == "" || propertyType == $type)    && ($city == "" || lower(address.city) match $city + "*" || lower(address.state) match $city + "*" || lower(address.zipCode) match $city + "*")    && ($minSqft == 0 || squareFeet >= $minSqft)    && ($maxSqft == 0 || squareFeet <= $maxSqft)    && ($minYear == 0 || yearBuilt >= $minYear)    && ($maxYear == 0 || yearBuilt <= $maxYear)    && ($minLotSize == 0 || lotSize >= $minLotSize)    && ($maxLotSize == 0 || lotSize <= $maxLotSize)    && ($daysOnMarket == 0 || dateTime(createdAt) >= dateTime(now()) - 60*60*24*$daysOnMarket)    && ($openHouse == false || (openHouseDate != null && dateTime(openHouseDate) >= dateTime(now())))    && ($priceReduced == false || (originalPrice != null && price < originalPrice))    && ($amenitiesCount == 0 || count((amenities)[@ in $amenities]) == $amenitiesCount)  ] | order(createdAt desc) [$start...$end] {    _id,    title,    "slug": slug.current,    price,    originalPrice,    bedrooms,    bathrooms,    squareFeet,    yearBuilt,    lotSize,    address,    "image": images[0] {   asset->{    _id,    url,    metadata { lqip, dimensions }  },  alt },    location,    amenities,    openHouseDate,    createdAt  }
+// Query: *[_type == "property" && status == "active"    && price >= $minPrice && price <= $maxPrice    && ($beds == 0 || ($bedsIsPlus == true && bedrooms >= $beds) || ($bedsIsPlus == false && bedrooms == $beds))    && ($baths == 0 || ($bathsIsPlus == true && bathrooms >= $baths) || ($bathsIsPlus == false && bathrooms == $baths))    && ($type == "" || propertyType == $type)    && ($city == "" || lower(address.city) match $city + "*" || lower(address.state) match $city + "*" || lower(address.zipCode) match $city + "*")    && ($minSqft == 0 || squareFeet >= $minSqft)    && ($maxSqft == 0 || squareFeet <= $maxSqft)    && ($minYear == 0 || yearBuilt >= $minYear)    && ($maxYear == 0 || yearBuilt <= $maxYear)    && ($minLotSize == 0 || lotSize >= $minLotSize)    && ($maxLotSize == 0 || lotSize <= $maxLotSize)    && ($daysOnMarket == 0 || dateTime(createdAt) >= dateTime(now()) - 60*60*24*$daysOnMarket)    && ($openHouse == false || (openHouseDate != null && dateTime(openHouseDate) >= dateTime(now())))    && ($priceReduced == false || (originalPrice != null && price < originalPrice))    && ($amenitiesCount == 0 || count((amenities)[@ in $amenities]) == $amenitiesCount)  ] | order(createdAt desc) [$start...$end] {    _id,    title,    "slug": slug.current,    price,    originalPrice,    propertyType,    createdAt,    status,    bedrooms,    bathrooms,    squareFeet,    yearBuilt,    lotSize,    address,    "image": images[0] {   asset->{    _id,    url,    metadata { lqip, dimensions }  },  alt },    location,    amenities,    openHouseDate,    createdAt  }
 export type PROPERTIES_SEARCH_QUERYResult = Array<{
   _id: string;
   title: string | null;
   slug: string | null;
   price: number | null;
   originalPrice: number | null;
+  propertyType: "apartment" | "condo" | "house" | "land" | "townhouse" | null;
+  createdAt: string | null;
+  status: "active" | "pending" | "sold" | null;
   bedrooms: number | null;
   bathrooms: number | null;
   squareFeet: number | null;
@@ -347,7 +350,6 @@ export type PROPERTIES_SEARCH_QUERYResult = Array<{
   location: Geopoint | null;
   amenities: Array<string> | null;
   openHouseDate: string | null;
-  createdAt: string | null;
 }>;
 // Variable: PROPERTIES_COUNT_QUERY
 // Query: count(*[_type == "property" && status == "active"    && price >= $minPrice && price <= $maxPrice    && ($beds == 0 || ($bedsIsPlus == true && bedrooms >= $beds) || ($bedsIsPlus == false && bedrooms == $beds))    && ($baths == 0 || ($bathsIsPlus == true && bathrooms >= $baths) || ($bathsIsPlus == false && bathrooms == $baths))    && ($type == "" || propertyType == $type)    && ($city == "" || lower(address.city) match $city + "*" || lower(address.state) match $city + "*" || lower(address.zipCode) match $city + "*")    && ($minSqft == 0 || squareFeet >= $minSqft)    && ($maxSqft == 0 || squareFeet <= $maxSqft)    && ($minYear == 0 || yearBuilt >= $minYear)    && ($maxYear == 0 || yearBuilt <= $maxYear)    && ($minLotSize == 0 || lotSize >= $minLotSize)    && ($maxLotSize == 0 || lotSize <= $maxLotSize)    && ($daysOnMarket == 0 || dateTime(createdAt) >= dateTime(now()) - 60*60*24*$daysOnMarket)    && ($openHouse == false || (openHouseDate != null && dateTime(openHouseDate) >= dateTime(now())))    && ($priceReduced == false || (originalPrice != null && price < originalPrice))    && ($amenitiesCount == 0 || count((amenities)[@ in $amenities]) == $amenitiesCount)  ])
@@ -444,11 +446,12 @@ export type AGENT_LEADS_QUERYResult = Array<{
   } | null;
 }>;
 // Variable: USER_PROFILE_QUERY
-// Query: *[_type == "user" && clerkId == $clerkId][0] {    _id,    name,    email,    phone,    photo {   asset->{    _id,    url,    metadata { lqip, dimensions }  },  alt },    createdAt  }
+// Query: *[_type == "user" && clerkId == $clerkId][0] {    _id,    name,    email,    clerkId,    phone,    photo {   asset->{    _id,    url,    metadata { lqip, dimensions }  },  alt },    createdAt  }
 export type USER_PROFILE_QUERYResult = {
   _id: string;
   name: string | null;
   email: string | null;
+  clerkId: string | null;
   phone: string | null;
   photo: {
     asset: {
@@ -606,11 +609,11 @@ export type ANALYTICS_LEADS_BY_PROPERTY_QUERYResult = Array<{
   leadCount: number;
 }>;
 // Variable: AMENITIES_QUERY
-// Query: *[_type == "amenity"] | order(order asc, label asc) {    _id,    value,    label,    icon  }
+// Query: *[_type == "amenity" && defined(value) && defined(label)]  | order(order asc, label asc) {    _id,    value,    label,    icon  }
 export type AMENITIES_QUERYResult = Array<{
   _id: string;
-  value: string | null;
-  label: string | null;
+  value: string;
+  label: string;
   icon: string | null;
 }>;
 // Variable: AGENT_ID_BY_USER_QUERY
@@ -684,12 +687,12 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n  *[_type == \"property\" && featured == true && status == \"active\"][0...6] {\n    _id,\n    title,\n    \"slug\": slug.current,\n    price,\n    bedrooms,\n    bathrooms,\n    squareFeet,\n    address,\n    \"image\": images[0] { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    location\n  }\n": FEATURED_PROPERTIES_QUERYResult;
-    "\n  *[_type == \"property\" && status == \"active\"\n    && price >= $minPrice && price <= $maxPrice\n    && ($beds == 0 || ($bedsIsPlus == true && bedrooms >= $beds) || ($bedsIsPlus == false && bedrooms == $beds))\n    && ($baths == 0 || ($bathsIsPlus == true && bathrooms >= $baths) || ($bathsIsPlus == false && bathrooms == $baths))\n    && ($type == \"\" || propertyType == $type)\n    && ($city == \"\" || lower(address.city) match $city + \"*\" || lower(address.state) match $city + \"*\" || lower(address.zipCode) match $city + \"*\")\n    && ($minSqft == 0 || squareFeet >= $minSqft)\n    && ($maxSqft == 0 || squareFeet <= $maxSqft)\n    && ($minYear == 0 || yearBuilt >= $minYear)\n    && ($maxYear == 0 || yearBuilt <= $maxYear)\n    && ($minLotSize == 0 || lotSize >= $minLotSize)\n    && ($maxLotSize == 0 || lotSize <= $maxLotSize)\n    && ($daysOnMarket == 0 || dateTime(createdAt) >= dateTime(now()) - 60*60*24*$daysOnMarket)\n    && ($openHouse == false || (openHouseDate != null && dateTime(openHouseDate) >= dateTime(now())))\n    && ($priceReduced == false || (originalPrice != null && price < originalPrice))\n    && ($amenitiesCount == 0 || count((amenities)[@ in $amenities]) == $amenitiesCount)\n  ] | order(createdAt desc) [$start...$end] {\n    _id,\n    title,\n    \"slug\": slug.current,\n    price,\n    originalPrice,\n    bedrooms,\n    bathrooms,\n    squareFeet,\n    yearBuilt,\n    lotSize,\n    address,\n    \"image\": images[0] { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    location,\n    amenities,\n    openHouseDate,\n    createdAt\n  }\n": PROPERTIES_SEARCH_QUERYResult;
+    "\n  *[_type == \"property\" && status == \"active\"\n    && price >= $minPrice && price <= $maxPrice\n    && ($beds == 0 || ($bedsIsPlus == true && bedrooms >= $beds) || ($bedsIsPlus == false && bedrooms == $beds))\n    && ($baths == 0 || ($bathsIsPlus == true && bathrooms >= $baths) || ($bathsIsPlus == false && bathrooms == $baths))\n    && ($type == \"\" || propertyType == $type)\n    && ($city == \"\" || lower(address.city) match $city + \"*\" || lower(address.state) match $city + \"*\" || lower(address.zipCode) match $city + \"*\")\n    && ($minSqft == 0 || squareFeet >= $minSqft)\n    && ($maxSqft == 0 || squareFeet <= $maxSqft)\n    && ($minYear == 0 || yearBuilt >= $minYear)\n    && ($maxYear == 0 || yearBuilt <= $maxYear)\n    && ($minLotSize == 0 || lotSize >= $minLotSize)\n    && ($maxLotSize == 0 || lotSize <= $maxLotSize)\n    && ($daysOnMarket == 0 || dateTime(createdAt) >= dateTime(now()) - 60*60*24*$daysOnMarket)\n    && ($openHouse == false || (openHouseDate != null && dateTime(openHouseDate) >= dateTime(now())))\n    && ($priceReduced == false || (originalPrice != null && price < originalPrice))\n    && ($amenitiesCount == 0 || count((amenities)[@ in $amenities]) == $amenitiesCount)\n  ] | order(createdAt desc) [$start...$end] {\n    _id,\n    title,\n    \"slug\": slug.current,\n    price,\n    originalPrice,\n    propertyType,\n    createdAt,\n    status,\n    bedrooms,\n    bathrooms,\n    squareFeet,\n    yearBuilt,\n    lotSize,\n    address,\n    \"image\": images[0] { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    location,\n    amenities,\n    openHouseDate,\n    createdAt\n  }\n": PROPERTIES_SEARCH_QUERYResult;
     "\n  count(*[_type == \"property\" && status == \"active\"\n    && price >= $minPrice && price <= $maxPrice\n    && ($beds == 0 || ($bedsIsPlus == true && bedrooms >= $beds) || ($bedsIsPlus == false && bedrooms == $beds))\n    && ($baths == 0 || ($bathsIsPlus == true && bathrooms >= $baths) || ($bathsIsPlus == false && bathrooms == $baths))\n    && ($type == \"\" || propertyType == $type)\n    && ($city == \"\" || lower(address.city) match $city + \"*\" || lower(address.state) match $city + \"*\" || lower(address.zipCode) match $city + \"*\")\n    && ($minSqft == 0 || squareFeet >= $minSqft)\n    && ($maxSqft == 0 || squareFeet <= $maxSqft)\n    && ($minYear == 0 || yearBuilt >= $minYear)\n    && ($maxYear == 0 || yearBuilt <= $maxYear)\n    && ($minLotSize == 0 || lotSize >= $minLotSize)\n    && ($maxLotSize == 0 || lotSize <= $maxLotSize)\n    && ($daysOnMarket == 0 || dateTime(createdAt) >= dateTime(now()) - 60*60*24*$daysOnMarket)\n    && ($openHouse == false || (openHouseDate != null && dateTime(openHouseDate) >= dateTime(now())))\n    && ($priceReduced == false || (originalPrice != null && price < originalPrice))\n    && ($amenitiesCount == 0 || count((amenities)[@ in $amenities]) == $amenitiesCount)\n  ])\n": PROPERTIES_COUNT_QUERYResult;
     "\n  *[_type == \"property\" && _id == $id][0] {\n    _id,\n    title,\n    description,\n    price,\n    propertyType,\n    status,\n    bedrooms,\n    bathrooms,\n    squareFeet,\n    yearBuilt,\n    address,\n    location,\n    images[] { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    amenities,\n    agent-> {\n      _id,\n      userId,\n      name,\n      email,\n      phone,\n      photo { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n      bio,\n      agency\n    }\n  }\n": PROPERTY_DETAIL_QUERYResult;
     "\n  *[_type == \"property\" && agent._ref == $agentId] | order(createdAt desc) {\n    _id,\n    title,\n    \"slug\": slug.current,\n    price,\n    status,\n    bedrooms,\n    bathrooms,\n    \"image\": images[0] { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    createdAt\n  }\n": AGENT_LISTINGS_QUERYResult;
     "\n  *[_type == \"lead\" && agent._ref == $agentId] | order(createdAt desc) {\n    _id,\n    buyerName,\n    buyerEmail,\n    buyerPhone,\n    status,\n    createdAt,\n    property-> {\n      _id,\n      title,\n      \"slug\": slug.current\n    }\n  }\n": AGENT_LEADS_QUERYResult;
-    "\n  *[_type == \"user\" && clerkId == $clerkId][0] {\n    _id,\n    name,\n    email,\n    phone,\n    photo { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    createdAt\n  }\n": USER_PROFILE_QUERYResult;
+    "\n  *[_type == \"user\" && clerkId == $clerkId][0] {\n    _id,\n    name,\n    email,\n    clerkId,\n    phone,\n    photo { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    createdAt\n  }\n": USER_PROFILE_QUERYResult;
     "\n  *[_type == \"user\" && clerkId == $clerkId][0]{ _id }\n": USER_EXISTS_QUERYResult;
     "\n  *[_type == \"agent\" && userId == $userId][0] {\n    _id,\n    name,\n    email,\n    phone,\n    photo { \n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions }\n  },\n  alt\n },\n    bio,\n    licenseNumber,\n    agency,\n    onboardingComplete\n  }\n": AGENT_PROFILE_QUERYResult;
     "\n  *[_type == \"agent\" && userId == $userId][0] {\n    _id,\n    userId,\n    name,\n    email,\n    onboardingComplete\n  }\n": AGENT_BY_USER_ID_QUERYResult;
@@ -705,7 +708,7 @@ declare module "@sanity/client" {
     "\n  count(*[_type == \"lead\" && agent._ref == $agentId && status == \"contacted\"])\n": ANALYTICS_LEADS_CONTACTED_QUERYResult;
     "\n  count(*[_type == \"lead\" && agent._ref == $agentId && status == \"closed\"])\n": ANALYTICS_LEADS_CLOSED_QUERYResult;
     "\n  *[_type == \"property\" && agent._ref == $agentId]{\n    \"title\": title,\n    \"leadCount\": count(*[_type == \"lead\" && property._ref == ^._id])\n  } | order(leadCount desc)[0...10]\n": ANALYTICS_LEADS_BY_PROPERTY_QUERYResult;
-    "\n  *[_type == \"amenity\"] | order(order asc, label asc) {\n    _id,\n    value,\n    label,\n    icon\n  }\n": AMENITIES_QUERYResult;
+    "\n  *[_type == \"amenity\" && defined(value) && defined(label)]\n  | order(order asc, label asc) {\n    _id,\n    value,\n    label,\n    icon\n  }\n": AMENITIES_QUERYResult;
     "\n  *[_type == \"agent\" && userId == $userId][0]{ _id }\n": AGENT_ID_BY_USER_QUERYResult;
     "\n  *[_type == \"agent\" && userId == $userId][0]{ _id, onboardingComplete }\n": AGENT_ONBOARDING_CHECK_QUERYResult;
     "\n  *[_type == \"user\" && clerkId == $clerkId][0]{ name, email, phone }\n": USER_CONTACT_QUERYResult;

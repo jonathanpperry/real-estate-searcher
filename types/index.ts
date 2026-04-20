@@ -88,7 +88,7 @@ export interface Lead {
 
 export interface User {
   _id: string;
-  clerkId: string;
+  clerkId: string | null;
   name: string;
   email: string;
   phone?: string;
