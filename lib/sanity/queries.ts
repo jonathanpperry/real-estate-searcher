@@ -50,6 +50,8 @@ export const PROPERTIES_SEARCH_QUERY = defineQuery(/* groq */ `
     "slug": slug.current,
     price,
     originalPrice,
+    propertyType,
+    status,
     bedrooms,
     bathrooms,
     squareFeet,
@@ -286,14 +288,14 @@ export const ANALYTICS_LEADS_BY_PROPERTY_QUERY = defineQuery(/* groq */ `
 
 // Fetch all amenities for forms
 export const AMENITIES_QUERY = defineQuery(/* groq */ `
-  *[_type == "amenity"] | order(order asc, label asc) {
+  *[_type == "amenity" && defined(value) && defined(label)]
+  | order(order asc, label asc) {
     _id,
     value,
     label,
     icon
   }
 `);
-
 // ============================================
 // Server Action Queries
 // ============================================
