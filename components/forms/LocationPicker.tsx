@@ -4,11 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import MapGL, { Marker, NavigationControl } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
-import type { GeoPoint } from "@/types";
+import { Geopoint } from "@/sanity/types";
 
 interface LocationPickerProps {
-  value?: GeoPoint;
-  onChange: (location: GeoPoint) => void;
+  value?: Geopoint;
+  onChange: (location: Geopoint) => void;
   disabled?: boolean;
 }
 
@@ -25,22 +25,21 @@ export function LocationPicker({
 
   // Sync viewState when value prop changes (e.g., from address autocomplete)
   useEffect(() => {
-    if (value) {
+    if (value?.lat != null && value?.lng != null) {
       setViewState((prev) => ({
         ...prev,
-        longitude: value.lng,
-        latitude: value.lat,
-        zoom: 15, // Zoom in when address is selected
+        longitude: value.lng!,
+        latitude: value.lat!,
+        zoom: 15,
       }));
     }
   }, [value?.lat, value?.lng, value]);
-
   const handleMapClick = useCallback(
     (event: { lngLat: { lng: number; lat: number } }) => {
       if (disabled) return;
 
       const { lng, lat } = event.lngLat;
-      onChange({ lat, lng });
+      onChange({ _type: "geopoint", lat, lng });
 
       // Center map on the clicked location
       setViewState((prev) => ({
@@ -69,7 +68,7 @@ export function LocationPicker({
         >
           <NavigationControl position="top-right" />
 
-          {value && (
+          {value?.lat != null && value?.lng != null && (
             <Marker longitude={value.lng} latitude={value.lat} anchor="bottom">
               <div className="text-primary">
                 <MapPin className="h-8 w-8 fill-primary stroke-white drop-shadow-lg" />
@@ -81,7 +80,7 @@ export function LocationPicker({
 
       {value ? (
         <p className="text-sm text-muted-foreground">
-          📍 Selected: {value.lat.toFixed(6)}, {value.lng.toFixed(6)}
+          📍 Selected: {value.lat?.toFixed(6)}, {value.lng?.toFixed(6)}{" "}
         </p>
       ) : (
         <p className="text-sm text-muted-foreground">

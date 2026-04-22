@@ -30,11 +30,11 @@ export function AgentCard({ agent, children }: AgentCardProps) {
             {agent.photo?.asset ? (
               <AvatarImage
                 src={urlFor(agent.photo).width(128).height(128).url()}
-                alt={agent.name}
+                alt={agent.name ?? "Agent Photo"}
               />
             ) : null}
             <AvatarFallback className="text-lg">
-              {getInitials(agent.name)}
+              {getInitials(agent!.name ?? "Agent")}
             </AvatarFallback>
           </Avatar>
           <div>

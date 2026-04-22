@@ -35,7 +35,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user.name,
+      name: user.name ?? "",
       phone: user.phone || "",
     },
   });
@@ -77,7 +77,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </label>
           <Input
             id="profile-email"
-            value={user.email}
+            value={user.email ?? ""}
             disabled
             className="bg-muted"
           />

@@ -8,6 +8,7 @@ import {
   AGENT_ID_BY_USER_QUERY,
   PROPERTY_AGENT_REF_QUERY,
 } from "@/lib/sanity/queries";
+import { Geopoint } from "@/sanity/types";
 
 interface ImageReference {
   _type: "image";
@@ -41,7 +42,7 @@ interface ListingFormDataWithImages {
   squareFeet: number;
   yearBuilt?: number;
   address: Address;
-  location?: GeoPoint;
+  location?: Geopoint;
   amenities?: string[];
   images?: ImageReference[];
 }
@@ -123,7 +124,7 @@ export async function updateListing(
     params: { id: listingId },
   });
 
-  if (!listing || listing.agent._ref !== agent._id) {
+  if (!listing || !listing.agent || listing.agent._ref !== agent._id) {
     throw new Error("Unauthorized");
   }
 
@@ -176,7 +177,7 @@ export async function updateListingStatus(
     params: { id: listingId },
   });
 
-  if (!listing || listing.agent._ref !== agent._id) {
+  if (!listing || !listing.agent || listing.agent._ref !== agent._id) {
     throw new Error("Unauthorized");
   }
 
@@ -211,7 +212,7 @@ export async function deleteListing(listingId: string) {
     params: { id: listingId },
   });
 
-  if (!listing || listing.agent._ref !== agent._id) {
+  if (!listing || !listing.agent || listing.agent._ref !== agent._id) {
     throw new Error("Unauthorized");
   }
 

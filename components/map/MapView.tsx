@@ -40,8 +40,8 @@ export function MapView({
       const firstProperty = validProperties[0];
       if (firstProperty.location) {
         setViewState({
-          longitude: firstProperty.location.lng,
-          latitude: firstProperty.location.lat,
+          longitude: firstProperty.location.lng ?? viewState.longitude,
+          latitude: firstProperty.location.lat ?? viewState.latitude,
           zoom: 10,
         });
         hasCenteredRef.current = true;
@@ -91,7 +91,7 @@ export function MapView({
           >
             <div className="cursor-pointer">
               <div className="bg-primary text-primary-foreground px-2 py-1 rounded-md text-xs font-semibold shadow-md hover:bg-primary/90 transition-colors">
-                {formatPrice(property.price)}
+                {formatPrice(property.price ?? 0)}
               </div>
             </div>
           </Marker>
@@ -99,8 +99,8 @@ export function MapView({
 
         {selectedProperty?.location && (
           <Popup
-            longitude={selectedProperty.location.lng}
-            latitude={selectedProperty.location.lat}
+            longitude={selectedProperty.location.lng ?? 0}
+            latitude={selectedProperty.location.lat ?? 0}
             anchor="bottom"
             onClose={() => setSelectedProperty(null)}
             closeButton={true}
@@ -115,7 +115,7 @@ export function MapView({
                 {selectedProperty.title}
               </h3>
               <p className="text-lg font-bold text-primary">
-                {formatPrice(selectedProperty.price)}
+                {formatPrice(selectedProperty.price ?? 0)}
               </p>
               <div className="flex gap-2 text-xs text-muted-foreground mt-1">
                 <span>{selectedProperty.bedrooms} beds</span>

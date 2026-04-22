@@ -46,6 +46,8 @@ const STATUS_OPTIONS = [
   { value: "sold", label: "Sold" },
 ];
 
+import { Geopoint, SanityImageDimensions } from "@/sanity/types";
+
 // Re-export Amenity type from shared types
 import type { Amenity } from "@/types";
 export type { Amenity };
@@ -80,36 +82,41 @@ type FormDataOutput = z.output<typeof formSchema>;
 interface ListingImage {
   asset: {
     _id: string;
-    url: string;
-  };
+    url: string | null;
+    metadata: {
+      lqip: string | null;
+      dimensions: SanityImageDimensions | null;
+    } | null;
+  } | null;
+  alt?: string | null;
 }
 
-interface GeoPoint {
-  lat: number;
-  lng: number;
-}
+// interface GeoPoint {
+//   lat: number;
+//   lng: number;
+// }
 
 interface ListingFormProps {
   listing?: {
     _id: string;
-    title: string;
-    description?: string;
-    price: number;
-    propertyType: string;
-    status: string;
-    bedrooms: number;
-    bathrooms: number;
-    squareFeet: number;
-    yearBuilt?: number;
+    title: string | null;
+    description?: string | null;
+    price: number | null;
+    propertyType: string | null;
+    status: string | null;
+    bedrooms: number | null;
+    bathrooms: number | null;
+    squareFeet: number | null;
+    yearBuilt?: number | null;
     address?: {
-      street?: string;
-      city?: string;
-      state?: string;
-      zipCode?: string;
-    };
-    location?: GeoPoint;
-    amenities?: string[];
-    images?: ListingImage[];
+      street?: string | null;
+      city?: string | null;
+      state?: string | null;
+      zipCode?: string | null;
+    } | null;
+    location?: Geopoint | null;
+    amenities?: string[] | null;
+    images?: ListingImage[] | null;
   };
   amenities: Amenity[];
   mode?: "create" | "edit";
@@ -124,15 +131,17 @@ export function ListingForm({
 
   // Initialize images from listing data
   const initialImages: ImageItem[] =
-    listing?.images?.map((img) => ({
-      id: img.asset._id,
-      url: img.asset.url,
-      assetRef: img.asset._id,
-    })) || [];
+    listing?.images
+      ?.filter((img) => img.asset?.url != null)
+      .map((img) => ({
+        id: img.asset!._id,
+        url: img.asset!.url!,
+        assetRef: img.asset!._id,
+      })) || [];
 
   const [images, setImages] = useState<ImageItem[]>(initialImages);
-  const [location, setLocation] = useState<GeoPoint | undefined>(
-    listing?.location,
+  const [location, setLocation] = useState<Geopoint | undefined>(
+    listing?.location ?? undefined,
   );
 
   // Build initial address display value for edit mode
@@ -181,7 +190,7 @@ export function ListingForm({
       form.setValue("zipCode", address.zipCode, { shouldValidate: true });
 
       // Update location for map
-      setLocation({ lat: address.lat, lng: address.lng });
+      setLocation({ _type: "geopoint", lat: address.lat, lng: address.lng });
       setAddressDisplayValue(address.formattedAddress);
     } else {
       // Clear address fields
@@ -195,7 +204,7 @@ export function ListingForm({
   };
 
   // Sync location picker changes back (for manual adjustments)
-  const handleLocationChange = (newLocation: GeoPoint) => {
+  const handleLocationChange = (newLocation: Geopoint) => {
     setLocation(newLocation);
   };
 
@@ -518,8 +527,8 @@ export function ListingForm({
                           className="flex items-center space-x-2"
                         >
                           <Checkbox
-                            id={amenity.value}
-                            checked={field.value?.includes(amenity.value)}
+                            id={amenity.value ?? ""}
+                            checked={field.value?.includes(amenity.value ?? "")}
                             onCheckedChange={(checked: boolean) => {
                               const currentValue = field.value || [];
                               if (checked) {
@@ -538,7 +547,7 @@ export function ListingForm({
                             disabled={isPending}
                           />
                           <label
-                            htmlFor={amenity.value}
+                            htmlFor={amenity.value ?? ""}
                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                           >
                             {amenity.label}

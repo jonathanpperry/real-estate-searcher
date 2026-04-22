@@ -40,15 +40,15 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     sanityFetch({
       query: DASHBOARD_LISTINGS_COUNT_QUERY,
-      params: { agentId: agent._id },
+      params: { agentId: agent!._id },
     }),
     sanityFetch({
       query: DASHBOARD_LEADS_COUNT_QUERY,
-      params: { agentId: agent._id },
+      params: { agentId: agent!._id },
     }),
     sanityFetch({
       query: DASHBOARD_NEW_LEADS_COUNT_QUERY,
-      params: { agentId: agent._id },
+      params: { agentId: agent!._id },
     }),
   ]);
 
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-heading">
-            {greeting}, {agent.name}!
+            {greeting}, {agent!.name}!
           </h1>
           <p className="text-muted-foreground mt-1">
             Here&apos;s an overview of your activity

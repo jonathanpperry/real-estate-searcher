@@ -543,9 +543,9 @@ export function FilterSidebar({ amenities }: FilterSidebarProps) {
                     >
                       <Checkbox
                         id={`amenity-${amenity.value}`}
-                        checked={filters.amenities.includes(amenity.value)}
+                        checked={filters.amenities.includes(amenity.value ?? "")}
                         onCheckedChange={() =>
-                          handleAmenityToggle(amenity.value)
+                          handleAmenityToggle(amenity.value ?? "")
                         }
                       />
                       <Label
